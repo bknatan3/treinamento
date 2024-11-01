@@ -2,9 +2,11 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
     nome: String,
-    email: String,
+    email: { type: String, unique: true },
+    senha: String,
     cidade: String,
-    senha: String
+    tipo: String, // consumidor ou prestador de serviço
+    isAdmin: { type: Boolean, default: false } // Identifica o administrador
 });
 
 module.exports = mongoose.model('User', userSchema);

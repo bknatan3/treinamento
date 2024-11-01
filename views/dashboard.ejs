@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard do Usuário</title>
+</head>
+<body>
+    <header>
+        <h1>Bem-vindo(a), <%= user.nome %></h1>
+        <a href="/">Home</a>
+        <a href="/logout">Sair</a>
+    </header>
+
+    <section>
+        <h2>Suas Informações</h2>
+        <p>Email: <%= user.email %></p>
+        <p>Cidade: <%= user.cidade %></p>
+        <p>Tipo de Usuário: <%= user.tipo === 'admin' ? 'Administrador' : 'Usuário Comum' %></p>
+    </section>
+</body>
+</html>

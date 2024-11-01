@@ -2,58 +2,91 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
-const User = require('./models/user'); // Certifique-se de que o caminho está correto
+const bcrypt = require('bcrypt');
+const session = require('express-session');
+const User = require('./models/user');
 
 const app = express();
-const PORT = process.env.PORT || 3000; // Atualizado para usar a variável de ambiente
+const PORT = process.env.PORT || 3000;
 
-// Configuração do bodyParser
+// Configuração do bodyParser e das sessões
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(session({ secret: 'seu_segredo', resave: false, saveUninitialized: true }));
 
 // Servindo arquivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Conexão ao MongoDB
 mongoose.connect('mongodb+srv://testenatan:natan1234@cluster0.2varw.mongodb.net/reservas_de_modelos?retryWrites=true&w=majority')
-    .then(() => {
-        console.log('Conectado ao MongoDB!');
-    })
-    .catch((error) => {
-        console.error('Erro ao conectar ao MongoDB:', error);
-    });
+    .then(() => console.log('Conectado ao MongoDB!'))
+    .catch((error) => console.error('Erro ao conectar ao MongoDB:', error));
 
-// Definindo o diretório das views
+// Configuração das views
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// Rota principal
-app.get('/', (req, res) => {
-    res.render('index');
-});
-
-// Rota para cadastrar um novo usuário
+// Rota de Registro de Usuário
 app.post('/cadastrar', async (req, res) => {
-    const { nome, email, senha, cidade, tipo } = req.body;
-    console.log('Dados recebidos:', { nome, email, senha, cidade, tipo });
+    const { nome, email, senha, cidade, tipo, isAdmin } = req.body;
     try {
-        const novoUsuario = new User({ nome, email, senha, cidade, tipo });
+        const hashSenha = await bcrypt.hash(senha, 10);
+        const novoUsuario = new User({ nome, email, senha: hashSenha, cidade, tipo, isAdmin: isAdmin === 'on' });
         await novoUsuario.save();
-        res.redirect('/'); // Redireciona após o cadastro
+        res.redirect('/');
     } catch (error) {
         console.error('Erro ao cadastrar usuário:', error);
         res.status(500).send('Erro ao cadastrar usuário');
     }
 });
 
-// Rota da página de administração
-app.get('/admin', async (req, res) => {
+// Rota de Login
+app.post('/login', async (req, res) => {
+    const { email, senha } = req.body;
     try {
-        const usuarios = await User.find(); // Busca todos os usuários no banco de dados
-        res.render('admin', { usuarios }); // Passa os usuários para a view
+        const usuario = await User.findOne({ email });
+        if (usuario && await bcrypt.compare(senha, usuario.senha)) {
+            req.session.userId = usuario._id;
+            req.session.isAdmin = usuario.isAdmin;
+            res.redirect('/dashboard');
+        } else {
+            res.status(401).send('Credenciais inválidas');
+        }
+    } catch (error) {
+        console.error('Erro ao fazer login:', error);
+        res.status(500).send('Erro ao fazer login');
+    }
+});
+
+// Middleware para proteger rotas
+function autenticar(req, res, next) {
+    if (!req.session.userId) return res.redirect('/');
+    next();
+}
+
+function autorizarAdmin(req, res, next) {
+    if (!req.session.isAdmin) return res.status(403).send('Acesso negado');
+    next();
+}
+
+// Rota de Dashboard (para usuários logados)
+app.get('/dashboard', autenticar, (req, res) => {
+    res.render('dashboard', { usuario: req.session });
+});
+
+// Rota da página de administração (apenas para admin)
+app.get('/admin', autenticar, autorizarAdmin, async (req, res) => {
+    try {
+        const usuarios = await User.find();
+        res.render('admin', { usuarios });
     } catch (error) {
         console.error('Erro ao buscar usuários:', error);
         res.status(500).send('Erro ao buscar usuários');
     }
+});
+
+// Logout
+app.post('/logout', (req, res) => {
+    req.session.destroy(() => res.redirect('/'));
 });
 
 // Inicializa o servidor

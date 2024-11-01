@@ -1,64 +1,33 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const path = require('path');
-const User = require('./models/user'); // Certifique-se de que o caminho está correto
-
-const app = express();
-const PORT = 3000;
-
-// Configuração do bodyParser
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// Conexão ao MongoDB
-mongoose.connect('mongodb+srv://testenatan:natan1234@cluster0.2varw.mongodb.net/reservas_de_modelos?retryWrites=true&w=majority', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-.then(() => {
-    console.log('Conectado ao MongoDB!');
-})
-.catch((error) => {
-    console.error('Erro ao conectar ao MongoDB:', error);
-});
-
-// Definindo o diretório das views
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-// Rota principal
-app.get('/', (req, res) => {
-    res.render('index');
-});
-
-// Rota para cadastrar um novo usuário
-app.post('/cadastrar', async (req, res) => {
-    const { nome, email } = req.body;
-    console.log('Dados recebidos:', { nome, email }); // Log dos dados recebidos
-
-    try {
-        const novoUsuario = new User({ nome, email });
-        await novoUsuario.save(); // Salva o usuário no banco de dados
-
-        res.redirect('/admin'); // Redireciona após o cadastro
-    } catch (error) {
-        console.error('Erro ao cadastrar usuário:', error);
-        res.status(500).send('Erro ao cadastrar usuário');
-    }
-});
-
-// Rota da página de administração
-app.get('/admin', async (req, res) => {
-    try {
-        const usuarios = await User.find(); // Busca todos os usuários no banco de dados
-        res.render('admin', { usuarios }); // Passa os usuários para a view
-    } catch (error) {
-        console.error('Erro ao buscar usuários:', error);
-        res.status(500).send('Erro ao buscar usuários');
-    }
-});
-
-// Inicializa o servidor
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-});
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração</title>
+</head>
+<body>
+    <header>
+        <h1>Painel Administrativo</h1>
+        <a href="/">Home</a>
+        <a href="/logout">Sair</a>
+    </header>
+    
+    <h2>Lista de Usuários</h2>
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Cidade</th>
+            <th>Tipo</th>
+        </tr>
+        <% usuarios.forEach(usuario => { %>
+            <tr>
+                <td><%= usuario.nome %></td>
+                <td><%= usuario.email %></td>
+                <td><%= usuario.cidade %></td>
+                <td><%= usuario.tipo %></td>
+            </tr>
+        <% }) %>
+    </table>
+</body>
+</html>

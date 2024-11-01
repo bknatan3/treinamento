@@ -5,7 +5,7 @@ const path = require('path');
 const User = require('./models/user'); // Certifique-se de que o caminho está correto
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Atualizado para usar a variável de ambiente
 
 // Configuração do bodyParser
 app.use(bodyParser.urlencoded({ extended: true }));

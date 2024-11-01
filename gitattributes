@@ -1,0 +1,15 @@
+
+# Tratar todos os arquivos de texto automaticamente
+* text=auto
+
+# Para garantir que arquivos específicos usem LF
+*.sh text eol=lf
+
+# Para garantir que arquivos de texto em Python usem LF
+*.py text eol=lf
+
+# Para garantir que arquivos de texto em HTML usem LF
+*.html text eol=lf
+
+# Para garantir que arquivos de texto em CSS usem LF
+*.css text eol=lf

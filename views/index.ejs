@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservas de Modelos</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Certifique-se de ter um arquivo CSS -->
+    <style>
+        /* styles.css */
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+        }
+
+        header {
+            background-color: #4a90e2;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        h2 {
+            color: #4a90e2;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .service-card, .admin-panel {
+            background-color: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #357ab8;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #4a90e2;
+            color: white;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .dialog-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Reservas de Modelos</h1>
+        <nav>
+            <ul>
+                <li><a href="#services">Serviços</a></li>
+                <li><a href="#about">Sobre Nós</a></li>
+                <li><a href="cadastro.html">Cadastro</a></li> <!-- Link para a nova página de cadastro -->
+                <li><a href="#login">Login</a></li>
+                <li><a href="#admin">Admin</a></li>
+                <li><a href="#contact">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="services">
+            <h2>Serviços Disponíveis</h2>
+            <div class="service-card">
+                <h3>Modelo 1</h3>
+                <p>Descrição do serviço 1.</p>
+                <button onclick="reserveService('Modelo 1')">Reservar</button>
+            </div>
+            <div class="service-card">
+                <h3>Modelo 2</h3>
+                <p>Descrição do serviço 2.</p>
+                <button onclick="reserveService('Modelo 2')">Reservar</button>
+            </div>
+        </section>
+
+        <section id="about">
+            <h2>Sobre Nós</h2>
+            <p>Informações sobre a empresa e colaborações com motéis.</p>
+        </section>
+
+        <section id="login">
+            <h2>Login</h2>
+            <form id="loginForm" action="/login" method="POST">
+                <label for="loginEmail">Email:</label>
+                <input type="email" id="loginEmail" name="email" required>
+
+                <label for="loginPassword">Senha:</label>
+                <input type="password" id="loginPassword" name="senha" required>
+
+                <button type="submit">Entrar</button>
+            </form>
+        </section>
+
+        <section id="contact">
+            <h2>Contato</h2>
+            <p>Email: contato@reservasdemodelos.com</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Reservas de Modelos. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        function reserveService(model) {
+            alert(`Serviço ${model} reservado!`);
+        }
+    </script>
+</body>
+</html>

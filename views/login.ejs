@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt'); // Certifique-se de que bcrypt está instalado e importado
+const bcrypt = require('bcryptjs'); // Certifique-se de que bcrypt está instalado e importado
 const Usuario = require('./models/Usuario'); // Altere para o caminho correto do modelo de usuário
 
 const app = express();
@@ -20,7 +20,7 @@ app.post('/login', async (req, res) => {
         }
 
         // Compara a senha com o hash armazenado
-        const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
+        const senhaCorreta = await bcryptjs.compare(senha, usuario.senha);
         if (!senhaCorreta) {
             return res.status(400).send('Senha incorreta');
         }

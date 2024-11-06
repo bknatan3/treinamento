@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const session = require('express-session');
 const User = require('./models/user');
 
@@ -29,7 +29,7 @@ app.set('view engine', 'ejs');
 app.post('/cadastrar', async (req, res) => {
     const { nome, email, senha, cidade, tipo, isAdmin } = req.body;
     try {
-        const hashSenha = await bcrypt.hash(senha, 10);
+        const hashSenha = await bcryptjs.hash(senha, 10);
         const novoUsuario = new User({ nome, email, senha: hashSenha, cidade, tipo, isAdmin: isAdmin === 'on' });
         await novoUsuario.save();
         res.redirect('/');

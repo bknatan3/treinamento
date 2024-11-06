@@ -9,6 +9,8 @@ const User = require('./models/user');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+
+
 // Configuração do bodyParser e das sessões
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({ secret: 'seu_segredo', resave: false, saveUninitialized: true }));
@@ -24,6 +26,7 @@ mongoose.connect('mongodb+srv://testenatan:natan1234@cluster0.2varw.mongodb.net/
 // Configuração das views
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
 
 // Rota de Registro de Usuário
 app.post('/cadastrar', async (req, res) => {

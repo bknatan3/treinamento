@@ -29,7 +29,7 @@ app.set('view engine', 'ejs');
 app.post('/cadastrar', async (req, res) => {
     const { nome, email, senha, cidade, tipo, isAdmin } = req.body;
     try {
-        const hashSenha = await bcryptjs.hash(senha, 10);
+        const hashSenha = await bcrypt.hash(senha, 10);  // Corrigido bcryptjs para bcrypt
         const novoUsuario = new User({ nome, email, senha: hashSenha, cidade, tipo, isAdmin: isAdmin === 'on' });
         await novoUsuario.save();
         res.redirect('/');

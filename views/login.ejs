@@ -5,8 +5,9 @@ const Usuario = require('./models/Usuario'); // Altere para o caminho correto do
 
 const app = express();
 
-// Middleware para tratar JSON
+// Middleware para tratar JSON e dados de formulários
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // Para lidar com formulários enviados via POST
 
 // Rota de login
 app.post('/login', async (req, res) => {
@@ -20,13 +21,14 @@ app.post('/login', async (req, res) => {
         }
 
         // Compara a senha com o hash armazenado
-        const senhaCorreta = await bcryptjs.compare(senha, usuario.senha);
+        const senhaCorreta = await bcrypt.compare(senha, usuario.senha); // Corrigido para bcrypt.compare
         if (!senhaCorreta) {
             return res.status(400).send('Senha incorreta');
         }
 
         // Autenticação bem-sucedida
-        res.status(200).send('Login realizado com sucesso!');
+        req.session.userId = usuario._id; // Armazena o ID do usuário na sessão
+        res.redirect('/dashboard'); // Redireciona para o dashboard após login
     } catch (error) {
         console.error('Erro ao fazer login:', error);
         res.status(500).send('Erro interno do servidor');

@@ -1,0 +1,9 @@
+<form action="/fornecedor/upload/<%= fornecedor._id %>" method="POST" enctype="multipart/form-data">
+    <label for="bio">Bio:</label>
+    <textarea name="bio"><%= fornecedor.bio %></textarea>
+
+    <label for="media">Adicionar Fotos ou Vídeos:</label>
+    <input type="file" name="media" multiple>
+
+    <button type="submit">Atualizar Perfil</button>
+</form>

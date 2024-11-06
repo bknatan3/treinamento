@@ -1,20 +1,38 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-<body>
-    <h1>Login</h1>
-    <form action="/login" method="POST">
-        <label for="email">Email:</label>
-        <input type="email" name="email" required>
-        <br>
-        <label for="senha">Senha:</label>
-        <input type="password" name="senha" required>
-        <br>
-        <button type="submit">Entrar</button>
-    </form>
-</body>
-</html>
+const express = require('express');
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt'); // Certifique-se de que bcrypt está instalado e importado
+const Usuario = require('./models/Usuario'); // Altere para o caminho correto do modelo de usuário
+
+const app = express();
+
+// Middleware para tratar JSON
+app.use(express.json());
+
+// Rota de login
+app.post('/login', async (req, res) => {
+    const { email, senha } = req.body;
+
+    try {
+        // Encontra o usuário pelo email
+        const usuario = await Usuario.findOne({ email });
+        if (!usuario) {
+            return res.status(400).send('Usuário não encontrado');
+        }
+
+        // Compara a senha com o hash armazenado
+        const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
+        if (!senhaCorreta) {
+            return res.status(400).send('Senha incorreta');
+        }
+
+        // Autenticação bem-sucedida
+        res.status(200).send('Login realizado com sucesso!');
+    } catch (error) {
+        console.error('Erro ao fazer login:', error);
+        res.status(500).send('Erro interno do servidor');
+    }
+});
+
+// Resto do código do servidor
+
+module.exports = app; // Exporta o app para inicialização

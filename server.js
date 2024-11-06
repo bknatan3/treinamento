@@ -63,6 +63,11 @@ function autenticar(req, res, next) {
     next();
 }
 
+app.get('/', (req, res) => {
+    res.render('index'); // Certifique-se de ter uma view chamada 'index.ejs' na pasta 'views'
+});
+
+
 function autorizarAdmin(req, res, next) {
     if (!req.session.isAdmin) return res.status(403).send('Acesso negado');
     next();
